@@ -1,0 +1,32 @@
+@login-btn-bg-color: #38485f;
+.login_wrapper {
+    background: url(../images/login_bg.png) no-repeat;
+    height: 100vh;
+    background-size: cover;
+    .login__box {
+        .logo {
+            width: 239px;
+            height: 60px;
+            text-align: center;
+            font-size: 20px;
+            color:#1C2B91;
+        }
+        width: 260px;
+        position: absolute;
+        left: 50%;
+        top: 50%;
+        transform: translate(-50%, -50%);
+        margin-top: -100px;
+        background: rgba(255, 255, 255, 1);
+        padding:40px 60px 60px;
+        box-sizing: content-box;
+        .login-form-button {
+            background: @login-btn-bg-color;
+            border-color: @login-btn-bg-color;
+            &:hover {
+                background: lighten(@login-btn-bg-color, 10%);
+                border-color: lighten(@login-btn-bg-color, 10%);
+            }
+        }
+    }
+}

@@ -1,0 +1,2 @@
+streamsuite 是一个实时计算平台
+主要是运行 jstorm on yarn 和 flink on yarn

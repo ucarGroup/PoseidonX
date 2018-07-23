@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+    <property>
+        <name>streaming.storm.submit.islocal</name>
+        <value>false</value>
+        <description></description>
+    </property>
+    <property>
+        <name>streaming.storm.worker.number</name>
+        <value>1</value>
+        <description></description>
+    </property>
+    <property>
+        <name>streaming.adaptor.application</name>
+        <value>com.huawei.streaming.jstorm.JStormApplication</value>
+        <description></description>
+    </property>
+    <property>
+        <name>streaming.killapplication.overtime</name>
+        <value>60</value>
+        <description></description>
+    </property>
+    <property>
+        <name>streaming.storm.thrift.transport.plugin</name>
+        <value>backtype.storm.security.auth.SimpleTransportPlugin</value>
+        <description></description>
+    </property>
+    <property>
+        <name>streaming.storm.killtask.waitseconds</name>
+        <value>3</value>
+        <description></description>
+    </property>
+
+    <property>
+        <name>streaming.storm.ha.zkport</name>
+        <value>5181</value>
+        <description></description>
+    </property>
+    <property>
+        <name>streaming.serde.default</name>
+        <value>com.huawei.streaming.serde.JsonSerDe</value>
+        <description></description>
+    </property>
+    <property>
+        <name>serde.simpleserde.separator</name>
+        <value>,</value>
+        <description></description>
+    </property>
+    <property>
+        <name>streaming.template.directory</name>
+        <value>${system:java.io.tmpdir}</value>
+        <description></description>
+    </property>
+</configuration>

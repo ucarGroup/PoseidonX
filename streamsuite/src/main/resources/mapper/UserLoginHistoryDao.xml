@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.ucar.streamsuite.dao.mysql.UserLoginHistoryDao">
+
+    <sql id="user_fields">
+        id,user_name userName ,user_role userRole,login_ip loginIp,login_time loginTime
+    </sql>
+
+
+
+    <insert id="insertNewUserLoginHistory" parameterType="com.ucar.streamsuite.user.po.UserLoginHistoryPO" keyProperty="id" useGeneratedKeys="true">
+        insert into stream_user_login_history
+        (user_name,user_role,login_ip,login_time)
+        values
+        (#{userName},#{userRole},#{loginIp},#{loginTime})
+    </insert>
+
+
+    <select id="pageQuery" resultType="com.ucar.streamsuite.user.po.UserLoginHistoryPO" parameterType="com.ucar.streamsuite.common.dto.PageQueryDTO" >
+        SELECT
+        <include refid="user_fields"/>
+        FROM stream_user_login_history
+        order by id desc
+        limit #{startIndex} , #{pageSize}
+    </select>
+
+    <select id="queryCount" resultType="int" >
+        SELECT
+          count(id)
+        FROM stream_user_login_history
+    </select>
+
+</mapper>

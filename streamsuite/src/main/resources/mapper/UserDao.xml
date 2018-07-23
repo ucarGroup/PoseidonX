@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.ucar.streamsuite.dao.mysql.UserDao">
+
+    <sql id="user_fields">
+        id,user_name userName ,password password,mobile,user_role userRole,user_status userStatus,create_time createTime,modify_time modifyTime
+    </sql>
+
+    <select id="getUserById" resultType="com.ucar.streamsuite.user.po.UserPO" parameterType="int">
+        SELECT
+        <include refid="user_fields"/>
+        FROM stream_user
+        WHERE id = #{id};
+    </select>
+
+    <select id="getUserByName" resultType="com.ucar.streamsuite.user.po.UserPO" parameterType="string">
+        SELECT
+        <include refid="user_fields"/>
+        FROM stream_user
+        WHERE user_name = #{userName};
+    </select>
+
+    <insert id="insertNewUser" parameterType="com.ucar.streamsuite.user.po.UserPO" keyProperty="id" useGeneratedKeys="true">
+        insert into stream_user
+        (user_name,password,mobile,user_role,user_status,create_time,modify_time)
+        values
+        (#{userName},#{password},#{mobile},#{userRole},#{userStatus},#{createTime},#{modifyTime})
+    </insert>
+
+    <update id="updateUser" parameterType="com.ucar.streamsuite.user.po.UserPO">
+        update stream_user
+        set mobile=#{mobile},password=#{password},user_role=#{userRole},user_status=#{userStatus},modify_time=#{modifyTime}
+        where id=#{id}
+    </update>
+
+
+    <select id="pageQuery" resultType="com.ucar.streamsuite.user.po.UserPO" parameterType="com.ucar.streamsuite.common.dto.PageQueryDTO" >
+        SELECT
+        <include refid="user_fields"/>
+        FROM stream_user
+        order by user_role,user_name
+        limit #{startIndex} , #{pageSize}
+    </select>
+
+    <select id="queryCount" resultType="int" >
+        SELECT
+          count(id)
+        FROM stream_user
+    </select>
+
+    <select id="listTaskRelationUsers" resultType="com.ucar.streamsuite.user.po.UserPO" parameterType="java.util.Map">
+        SELECT
+        <include refid="user_fields"/>
+        FROM stream_user
+        WHERE (user_role = 0 AND user_status = 0)
+        <if test="ids != null and ids.size > 0">
+        OR (id <foreach collection="ids" open="in (" close=")" item="id" separator=",">#{id}</foreach>
+            AND user_status = 0)
+        </if>
+
+    </select>
+
+</mapper>

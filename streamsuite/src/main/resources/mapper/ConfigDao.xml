@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.ucar.streamsuite.dao.mysql.ConfigDao">
+
+    <sql id="config_fields">
+        id,config_name configName,config_value configValue,config_remark configRemark,create_time createTime,modify_time modifyTime
+    </sql>
+
+    <select id="getConfigById" resultType="com.ucar.streamsuite.config.po.ConfigPO" parameterType="int">
+        SELECT
+        <include refid="config_fields"/>
+        FROM stream_config
+        WHERE id = #{id};
+    </select>
+
+    <select id="getConfigByName" resultType="com.ucar.streamsuite.config.po.ConfigPO" parameterType="String">
+        SELECT
+        <include refid="config_fields"/>
+        FROM stream_config
+        WHERE config_name = #{configName};
+    </select>
+
+    <insert id="insertNewConfig" parameterType="com.ucar.streamsuite.config.po.ConfigPO" keyProperty="id" useGeneratedKeys="true">
+        insert into stream_config
+        (config_name,config_value,config_remark,create_time,modify_time)
+        values
+        (#{configName},#{configValue},#{configRemark},#{createTime},#{modifyTime})
+    </insert>
+
+    <update id="updateConfig" parameterType="com.ucar.streamsuite.config.po.ConfigPO">
+        update stream_config
+        set config_name=#{configName},config_value=#{configValue},config_remark=#{configRemark},modify_time=#{modifyTime}
+        where id=#{id}
+    </update>
+
+
+    <select id="pageQuery" resultType="com.ucar.streamsuite.config.po.ConfigPO" parameterType="com.ucar.streamsuite.common.dto.PageQueryDTO" >
+        SELECT
+        <include refid="config_fields"/>
+        FROM stream_config
+        order by config_name
+        limit #{startIndex} , #{pageSize}
+    </select>
+
+    <select id="queryCount" resultType="int" >
+        SELECT
+          count(id)
+        FROM stream_config
+    </select>
+
+</mapper>

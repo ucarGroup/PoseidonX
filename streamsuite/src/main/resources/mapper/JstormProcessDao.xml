@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.ucar.streamsuite.dao.mysql.JstormProcessDao">
+
+    <sql id="jstormProcess_fields">
+        id,task_id taskId
+        ,top_id topId
+        ,yarn_app_id yarnAppId
+        ,top_log_message topLogMessage
+        ,start_time startTime
+        ,yarn_app_metadata yarnAppMetadata
+        ,task_config taskConfig
+        ,task_detail taskDetail
+        ,submit_type submitType
+        ,submit_result submitResult
+    </sql>
+
+    <insert id="insert" parameterType="com.ucar.streamsuite.engine.po.JstormProcessPO" keyProperty="id" useGeneratedKeys="true">
+        insert into stream_jstorm_process
+        (task_id,top_id,yarn_app_id,top_log_message,start_time,yarn_app_metadata,task_config,submit_type,submit_result)
+        values
+        (#{taskId},#{topId},#{yarnAppId},#{topLogMessage},#{startTime},#{yarnAppMetadata},#{taskConfig},#{submitType},0)
+    </insert>
+
+    <update id="update" parameterType="com.ucar.streamsuite.engine.po.JstormProcessPO">
+        update stream_jstorm_process
+        <trim prefix="set" suffixOverrides=",">
+            <if test="topId != null">
+                top_id=#{topId},
+            </if>
+            <if test="yarnAppId != null">
+                yarn_app_id=#{yarnAppId},
+            </if>
+            <if test="topLogMessage != null">
+                top_log_message=#{topLogMessage},
+            </if>
+            <if test="yarnAppMetadata != null">
+                yarn_app_metadata=#{yarnAppMetadata},
+            </if>
+            <if test="taskDetail != null">
+                task_detail=#{taskDetail},
+            </if>
+        </trim>
+        where id=#{id}
+    </update>
+
+    <update id="updateSubmitOk" parameterType="int">
+        update stream_jstorm_process
+        set submit_result = 1
+        where id=#{id}
+    </update>
+
+    <select id="getById" resultType="com.ucar.streamsuite.engine.po.JstormProcessPO" parameterType="int">
+        SELECT
+        <include refid="jstormProcess_fields"/>
+        FROM stream_jstorm_process
+        WHERE id = #{id};
+    </select>
+
+    <select id="getByIds" resultType="com.ucar.streamsuite.engine.po.JstormProcessPO" parameterType="java.util.Map">
+        SELECT
+        <include refid="jstormProcess_fields"/>
+        FROM stream_jstorm_process
+        WHERE id <foreach collection="ids" open="in (" close=")" item="id" separator=",">#{id}</foreach>
+    </select>
+
+    <select id="pageQuery" resultType="com.ucar.streamsuite.engine.po.JstormProcessPO" parameterType="com.ucar.streamsuite.engine.dto.ProcessPageQueryDTO">
+        SELECT
+        <include refid="jstormProcess_fields"/>
+        FROM stream_jstorm_process
+        WHERE task_id = #{taskId}
+        ORDER BY id desc
+        limit #{startIndex}, #{pageSize}
+    </select>
+
+    <select id="queryCount" resultType="int" parameterType="com.ucar.streamsuite.engine.dto.ProcessPageQueryDTO">
+        SELECT count(id)
+        <include refid="jstormProcess_fields"/>
+        FROM stream_jstorm_process
+        WHERE task_id = #{taskId}
+    </select>
+</mapper>

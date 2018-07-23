@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.ucar.streamsuite.dao.mysql.CqlDao">
+
+    <sql id="cql_fields">
+         id,
+         cql_name cqlName,
+         cql_type cqlType,
+         cql_text cqlText,
+         cql_remark cqlRemark,
+         cql_status cqlStatus,
+         creator_user_name creatorUserName,
+         modify_user_name modifyUserName,
+         create_time createTime,
+         modify_time modifyTime,
+         user_group_id userGroupId
+    </sql>
+
+    <select id="getCqlById" resultType="com.ucar.streamsuite.cql.po.CqlPO" parameterType="int">
+        SELECT
+        <include refid="cql_fields"/>
+        FROM stream_cql
+        WHERE id = #{id};
+    </select>
+
+
+    <insert id="insertNewCql" parameterType="com.ucar.streamsuite.cql.po.CqlPO" keyProperty="id" useGeneratedKeys="true">
+        insert into stream_cql
+        (cql_name,cql_type,cql_text,cql_remark,creator_user_name,modify_user_name,create_time,modify_time,user_group_id)
+        values
+        (#{cqlName},#{cqlType},#{cqlText},#{cqlRemark},#{creatorUserName},#{modifyUserName},#{createTime},#{modifyTime},#{userGroupId})
+    </insert>
+
+    <update id="updateCql" parameterType="com.ucar.streamsuite.cql.po.CqlPO">
+        update stream_cql
+        set cql_name=#{cqlName},cql_type=#{cqlType},cql_text=#{cqlText},cql_remark=#{cqlRemark},modify_user_name=#{modifyUserName},modify_time=#{modifyTime},user_group_id=#{userGroupId}
+        where id=#{id}
+    </update>
+
+
+    <select id="pageQuery" resultType="com.ucar.streamsuite.cql.po.CqlPO" parameterType="com.ucar.streamsuite.common.dto.PageQueryDTO" >
+        SELECT
+        <include refid="cql_fields"/>
+        FROM stream_cql
+        order by id desc
+        limit #{startIndex} , #{pageSize}
+    </select>
+
+    <select id="queryCount" resultType="int" >
+        SELECT
+          count(id)
+        FROM stream_cql
+    </select>
+
+    <select id="getCqlByUser" resultType="com.ucar.streamsuite.cql.po.CqlPO" parameterType="java.util.Map" >
+        SELECT
+        a.id,
+        a.cql_name cqlName,
+        a.cql_text cqlText,
+        a.cql_type cqlType,
+        a.cql_remark cqlRemark,
+        a.cql_status cqlStatus,
+        a.creator_user_name creatorUserName,
+        a.modify_user_name modifyUserName,
+        a.create_time createTime,
+        a.modify_time modifyTime,
+        a.user_group_id userGroupId
+        FROM stream_cql a left join stream_user_group b on a.user_group_id = b.id
+        <where>
+            <if test="userName != null and userName != ''">
+                (creator_user_name = #{userName}) or (b.members like concat('%',#{userName},'%'))
+            </if>
+            and cql_type = #{cqlType}
+        </where>
+        order by cql_name
+
+    </select>
+</mapper>

@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.ucar.streamsuite.dao.mysql.SparkProcessDao">
+
+    <sql id="sparkProcess_fields">
+        id,task_id taskId
+        ,yarn_app_id yarnAppId
+        ,log_message logMessage
+        ,start_time startTime
+        ,task_config taskConfig
+        ,submit_result submitResult
+    </sql>
+
+    <insert id="insert" parameterType="com.ucar.streamsuite.engine.po.SparkProcessPO" keyProperty="id" useGeneratedKeys="true">
+         insert into stream_spark_process
+        (task_id,yarn_app_id,log_message,start_time,task_config,submit_result)
+        values
+        (#{taskId},#{yarnAppId},#{logMessage},#{startTime},#{taskConfig},0)
+    </insert>
+
+    <update id="update" parameterType="com.ucar.streamsuite.engine.po.SparkProcessPO">
+        update stream_spark_process
+        <trim prefix="set" suffixOverrides=",">
+            <if test="yarnAppId != null">
+                yarn_app_id=#{yarnAppId},
+            </if>
+            <if test="logMessage != null">
+                log_message=#{logMessage},
+            </if>
+        </trim>
+        where id=#{id}
+    </update>
+
+    <update id="updateSubmitOk" parameterType="int">
+        update stream_spark_process
+        set submit_result = 1
+        where id=#{id}
+    </update>
+
+    <select id="getById" resultType="com.ucar.streamsuite.engine.po.SparkProcessPO" parameterType="int">
+        SELECT
+        <include refid="sparkProcess_fields"/>
+        FROM stream_spark_process
+        WHERE id = #{id};
+    </select>
+
+    <select id="pageQuery" resultType="com.ucar.streamsuite.engine.po.SparkProcessPO" parameterType="com.ucar.streamsuite.engine.dto.ProcessPageQueryDTO">
+        SELECT
+        <include refid="sparkProcess_fields"/>
+        FROM stream_spark_process
+        WHERE task_id = #{taskId}
+        ORDER BY id desc
+        limit #{startIndex}, #{pageSize}
+    </select>
+
+    <select id="queryCount" resultType="int" parameterType="com.ucar.streamsuite.engine.dto.ProcessPageQueryDTO">
+        SELECT count(id)
+        <include refid="sparkProcess_fields"/>
+        FROM stream_spark_process
+        WHERE task_id = #{taskId}
+    </select>
+</mapper>

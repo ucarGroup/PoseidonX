@@ -1,0 +1,215 @@
+@import 'reset';
+@import '~antd/dist/antd.less';
+@import 'vars';
+@import '../theme/antd-default.less';
+@import 'glob';
+
+@font-face {
+  font-family: 'iconfont';
+  /* project id 465353 */
+  src: url('//at.alicdn.com/t/font_465353_5gknikkokod5nrk9.eot');
+  src: url('//at.alicdn.com/t/font_465353_5gknikkokod5nrk9.eot?#iefix') format('embedded-opentype'),
+  url('//at.alicdn.com/t/font_465353_5gknikkokod5nrk9.woff') format('woff'),
+  url('//at.alicdn.com/t/font_465353_5gknikkokod5nrk9.ttf') format('truetype'),
+  url('//at.alicdn.com/t/font_465353_5gknikkokod5nrk9.svg#iconfont') format('svg');
+}
+
+i.antd-cust-icon {
+  font-family: 'iconfont';
+  font-style: normal;
+}
+
+.drag-mask {
+  display: none;
+  position: fixed;
+  left: 0;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 9999;
+}
+
+.draging {
+  .drag-mask {
+    display: block;
+  }
+}
+
+.react-draggable {
+  z-index: 2000;
+  position: fixed !important;
+  top: 55px !important;
+  height: 100vh !important;
+  color: #fa5555;
+  user-select: none;
+  border-left: dotted 1px transparent;
+  .ant-cust-icon-drag {
+    cursor: col-resize !important;
+    position: absolute;
+    top: 40%;
+    transform: rotate(90deg);
+    font-size: 20px;
+    left: -14px;
+    text-align: center;
+  }
+  &:hover {
+    color: #3A9BFC
+  }
+}
+
+.app_index {
+  .ant-layout {
+    min-width: 1000px;
+    .ant-layout-sider {
+      height: 100vh;
+      position: fixed;
+      z-index: 1;
+      .logo {
+        min-height: 20px;
+        padding: 16px 20px;
+        margin: 0px;
+        display: flex;
+        justify-content: center;
+        background-color: rgb(0, 33, 64);
+        color: #fff;
+        font-size: 18px;
+      }
+      &.ant-layout-sider-collapsed {
+        .logo {
+          transform: scale(.6);
+        }
+      }
+    }
+    .react-draggable {
+      z-index: 2000;
+      position: fixed !important;
+      top: 55px !important;
+      height: 100vh !important;
+      color: #fa5555;
+      user-select: none;
+      border-left: dotted 1px transparent;
+      .ant-cust-icon-drag {
+        cursor: col-resize !important;
+        position: absolute;
+        top: 40%;
+        transform: rotate(90deg);
+        font-size: 20px;
+        left: -14px;
+        text-align: center;
+      }
+      &:hover {
+        color: #3A9BFC
+      }
+    }
+    .main {
+      margin-left: 200px;
+      transition: all .2s;
+      min-height: calc(~"100vh - 55px");
+    }
+  }
+
+  .draging {
+    .ant-layout {
+      .react-draggable {
+        background: none;
+        border-left: dotted 1px #eb9e05;
+        .ant-cust-icon-drag {
+          //display: none;
+        }
+      }
+    }
+  }
+
+  .ant-form {
+    .ant-form-item {
+      .ant-select {
+        top: 0px;
+        position: relative;
+      }
+    }
+    &.ant-form-inline {
+      .event-wrapper-block {
+        display: inline-block;
+        border: 0;
+      }
+    }
+  }
+
+  .ant-layout-header {
+    height: 55px;
+    background-color: #fff;
+    padding: 0;
+    box-shadow: 4px 4px 40px 0 rgba(0, 0, 0, .05);
+    .header {
+      flex: 1;
+      .siderbutton {
+        height: 55px;
+        width: 47px;
+        line-height: 55px;
+        text-align: center;
+        font-size: 18px;
+        cursor: pointer;
+        float: left;
+        transition: @transition-ease-in;
+        &:hover {
+          color: @primary-color;
+          background-color: fade(@primary-color, 15%);
+        }
+      }
+      .badge-wrap {
+        float: right;
+        margin-top: -4px;
+        display: none;
+        .ant-badge {
+          cursor: pointer;
+        }
+      }
+      .ant-menu-root {
+        height: 56px;
+        line-height: 56px;
+      }
+
+      .ant-menu.ant-menu-plats {
+        float: left;
+        margin-left: 50px;
+        >.ant-menu-item {
+          margin-right: 5px;
+        }
+        .ant-menu-submenu-horizontal {
+          margin-right: 5px;
+        }
+      }
+      .ant-menu.ant-menu-horizontal>.ant-menu-item-selected {
+        border-bottom: 2px solid #409eff;
+        color: #588EE9;
+      }
+      .ant-menu.right-menu {
+        float: right;
+      }
+    }
+  }
+
+  .ant-layout-content {
+    padding: 15px 15px;
+    .app-breadcrumb {
+      height: 45px;
+      line-height: 45px;
+      margin-top: 2px;
+      .ant-breadcrumb {
+        .anticon-home {
+          margin-right: 5px;
+        }
+      }
+      .ant-breadcrumb>span:last-child {
+        color: #999;
+      }
+    }
+  }
+
+  .ant-layout-footer {
+    height: 50px;
+    line-height: 50px;
+    padding: 0;
+    text-align: center;
+  }
+}

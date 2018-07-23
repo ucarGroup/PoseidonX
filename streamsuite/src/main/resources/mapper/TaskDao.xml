@@ -1,0 +1,181 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.ucar.streamsuite.dao.mysql.TaskDao">
+
+    <sql id="task_fields">
+        id,task_name taskName
+          ,task_type taskType
+          ,task_status taskStatus
+          ,audit_status auditStatus
+          ,audit_time auditTime
+          ,audit_user_name auditUserName
+          ,remark remark
+          ,task_config taskConfig
+          ,engine_type engineType
+          ,process_id processId
+          ,task_start_time taskStartTime
+          ,task_stop_time taskStopTime
+          ,user_group_id userGroupId
+          ,creator_user_name creatorUserName
+          ,modify_user_name modifyUserName
+          ,error_info errorInfo
+          ,delete_status deleteStatus
+          ,create_time createTime
+          ,modify_time modifyTime
+          ,archive_id archiveId
+          ,archive_version_id archiveVersionId
+          ,is_cql isCql
+    </sql>
+
+    <select id="listAll" resultType="com.ucar.streamsuite.task.po.TaskPO" parameterType="int">
+        SELECT
+        <include refid="task_fields"/>
+        FROM stream_task
+        where delete_status = 0 and engine_type = #{engineType} and task_status in (1,2);
+    </select>
+
+    <select id="getById" resultType="com.ucar.streamsuite.task.po.TaskPO" parameterType="int">
+        SELECT
+        <include refid="task_fields"/>
+        FROM stream_task
+        WHERE id = #{id};
+    </select>
+
+    <select id="getByName" resultType="com.ucar.streamsuite.task.po.TaskPO" parameterType="String">
+        SELECT
+        <include refid="task_fields"/>
+        FROM stream_task
+        WHERE task_name = #{taskName} and delete_status = 0;
+    </select>
+
+    <insert id="insert" parameterType="com.ucar.streamsuite.task.po.TaskPO" keyProperty="id" useGeneratedKeys="true">
+        insert into stream_task
+        (task_name,task_type,task_status,audit_status,audit_time,audit_user_name,remark,task_config,engine_type,process_id,task_start_time,task_stop_time,user_group_id,creator_user_name,modify_user_name,error_info,delete_status,create_time,modify_time,archive_id,archive_version_id,is_cql)
+        values
+        (#{taskName},0,#{taskStatus},#{auditStatus},#{auditTime},#{auditUserName},#{remark},#{taskConfig},#{engineType},#{processId},#{taskStartTime},#{taskStopTime},#{userGroupId},#{creatorUserName},#{modifyUserName},#{errorInfo},#{deleteStatus},#{createTime},#{modifyTime},#{archiveId},#{archiveVersionId},#{isCql})
+    </insert>
+
+    <update id="updateInfo" parameterType="com.ucar.streamsuite.task.po.TaskPO">
+        update stream_task
+        set task_type=0,engine_type=#{engineType},task_config=#{taskConfig},modify_user_name=#{modifyUserName},modify_time=#{modifyTime},archive_id=#{archiveId},archive_version_id=#{archiveVersionId},user_group_id=#{userGroupId},remark=#{remark},is_cql=#{isCql}
+        where id=#{id} and delete_status = 0
+    </update>
+
+    <update id="update4Audit" parameterType="com.ucar.streamsuite.task.po.TaskPO">
+        update stream_task
+        set audit_status=#{auditStatus},audit_time=#{auditTime},audit_user_name=#{auditUserName}
+        where id=#{id} and delete_status = 0 and audit_status in (0)
+    </update>
+
+    <update id="update4Start" parameterType="com.ucar.streamsuite.task.po.TaskPO">
+        update stream_task
+        set task_start_time=#{taskStartTime},process_id=#{processId},task_status=#{taskStatus},error_info='',task_stop_time=null
+        where id=#{id} and delete_status = 0 and task_status in (0,1,3)
+    </update>
+
+    <update id="update4Stop" parameterType="com.ucar.streamsuite.task.po.TaskPO">
+        update stream_task
+        set task_stop_time=#{taskStopTime},task_status=#{taskStatus},error_info=''
+        where id=#{id} and delete_status = 0 and task_status in (1,2)
+    </update>
+
+    <update id="update4ERROR" parameterType="com.ucar.streamsuite.task.po.TaskPO">
+        update stream_task
+        <trim prefix="set" suffixOverrides=",">
+            <if test="errorInfo != null">
+               error_info = #{errorInfo},
+            </if>
+            <if test="taskStopTime != null">
+               task_stop_time = #{taskStopTime},
+            </if>
+            <if test="taskStatus != null">
+               task_status = #{taskStatus},
+            </if>
+        </trim>
+        where id=#{id} and delete_status = 0 and task_status in (1,2)
+    </update>
+
+    <update id="delete" parameterType="int">
+        update stream_task
+        set delete_status = 1
+        where id=#{id} and delete_status = 0
+    </update>
+
+    <select id="pageQuery" resultType="com.ucar.streamsuite.task.po.TaskPO" parameterType="com.ucar.streamsuite.task.dto.TaskPageQueryDTO" >
+        SELECT a.id,a.task_name taskName
+        ,a.task_type taskType
+        ,a.task_status taskStatus
+        ,a.audit_status auditStatus
+        ,a.audit_time auditTime
+        ,a.audit_user_name auditUserName
+        ,a.remark remark
+        ,a.task_config taskConfig
+        ,a.engine_type engineType
+        ,a.process_id processId
+        ,a.task_start_time taskStartTime
+        ,a.task_stop_time taskStopTime
+        ,a.user_group_id userGroupId
+        ,a.creator_user_name creatorUserName
+        ,a.modify_user_name modifyUserName
+        ,a.error_info errorInfo
+        ,a.delete_status deleteStatus
+        ,a.create_time createTime
+        ,a.modify_time modifyTime
+        ,a.archive_id archiveId
+        ,a.archive_version_id archiveVersionId
+        ,a.is_cql isCql
+        FROM stream_task a left join stream_user_group b on a.user_group_id = b.id
+        <where>
+            a.delete_status = 0
+            <if test="creatorUserNameCondition != null and creatorUserNameCondition != ''">
+                AND a.creator_user_name = #{creatorUserNameCondition}
+            </if>
+            <if test="currentUserNameCondition != null and currentUserNameCondition != ''">
+                AND  ((a.creator_user_name = #{currentUserNameCondition}) or (b.members like concat('%',#{currentUserNameCondition},'%')))
+            </if>
+            <if test="taskNameCondition != null and taskNameCondition != ''">
+                AND a.task_name like #{taskNameCondition}
+            </if>
+            <if test="taskStatusCondition != null">
+                AND a.task_status = #{taskStatusCondition}
+            </if>
+            <if test="auditStatusCondition != null">
+                AND a.audit_status = #{auditStatusCondition}
+            </if>
+            <if test="engineTypeCondition != null">
+                AND a.engine_type = #{engineTypeCondition}
+            </if>
+        </where>
+        order by task_name
+        limit #{startIndex}, #{pageSize}
+    </select>
+
+    <select id="queryCount" resultType="int" parameterType="com.ucar.streamsuite.task.dto.TaskPageQueryDTO">
+        SELECT count(a.id)
+        FROM stream_task a left join stream_user_group b on a.user_group_id = b.id
+        <where>
+            a.delete_status = 0
+            <if test="creatorUserNameCondition != null and creatorUserNameCondition != ''">
+                AND a.creator_user_name = #{creatorUserNameCondition}
+            </if>
+            <if test="currentUserNameCondition != null and currentUserNameCondition != ''">
+                AND  ((a.creator_user_name = #{currentUserNameCondition}) or (b.members like concat('%',#{currentUserNameCondition},'%')))
+            </if>
+            <if test="taskNameCondition != null and taskNameCondition != ''">
+                AND  a.task_name like #{taskNameCondition}
+            </if>
+            <if test="taskStatusCondition != null">
+                AND  a.task_status = #{taskStatusCondition}
+            </if>
+            <if test="auditStatusCondition != null">
+                AND  a.audit_status = #{auditStatusCondition}
+            </if>
+            <if test="engineTypeCondition != null">
+                AND a.engine_type = #{engineTypeCondition}
+            </if>
+        </where>
+    </select>
+
+</mapper>

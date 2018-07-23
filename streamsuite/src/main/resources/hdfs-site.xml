@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="configuration.xsl"?>
+<!--
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License. See accompanying LICENSE file.
+-->
+
+<!-- Put site-specific property overrides in this file. -->
+
+<configuration>
+
+    <property>
+        <name>dfs.replication</name>
+        <value>${maven.hadoop.replication}</value>
+    </property>
+
+    <property>
+        <name>dfs.webhdfs.enabled</name>
+        <value>true</value>
+    </property>
+
+    <property>
+        <name>dfs.namenode.datanode.registration.ip-hostname-check</name>
+        <value>false</value>
+    </property>
+
+    <property>
+        <name>dfs.datanode.handler.count</name>
+        <value>10</value>
+        <description>The number of server threads for the datanode.</description>
+    </property>
+
+    <property>
+        <name>dfs.nameservices</name>
+        <value>${maven.hadoop.nameservices}</value>
+    </property>
+
+    <property>
+        <name>dfs.ha.namenodes.${maven.hadoop.nameservices}</name>
+        <value>nn1,nn2</value>
+    </property>
+
+    <property>
+        <name>dfs.namenode.rpc-address.${maven.hadoop.nameservices}.nn1</name>
+        <value>${maven.hadoop.host1}:${maven.hadoop.rpcport}</value>
+    </property>
+    <property>
+        <name>dfs.namenode.rpc-address.${maven.hadoop.nameservices}.nn2</name>
+        <value>${maven.hadoop.host2}:${maven.hadoop.rpcport}</value>
+    </property>
+
+    <property>
+        <name>dfs.namenode.http-address.${maven.hadoop.nameservices}.nn1</name>
+        <value>${maven.hadoop.host1}:${maven.hadoop.httpport}</value>
+    </property>
+    <property>
+        <name>dfs.namenode.http-address.${maven.hadoop.nameservices}.nn2</name>
+        <value>${maven.hadoop.host2}:${maven.hadoop.httpport}</value>
+    </property>
+
+    <property>
+        <name>dfs.namenode.shared.edits.dir</name>
+        <value>${maven.hadoop.shared.edits.dir}</value>
+    </property>
+
+    <property>
+        <name>dfs.client.failover.proxy.provider.${maven.hadoop.nameservices}</name>
+        <value>org.apache.hadoop.hdfs.server.namenode.ha.ConfiguredFailoverProxyProvider</value>
+    </property>
+
+    <property>
+        <name>dfs.ha.fencing.methods</name>
+        <value>sshfence</value>
+    </property>
+
+    <property>
+        <name>dfs.ha.fencing.ssh.private-key-files</name>
+        <value>/home/hadoop/.ssh/id_rsa</value>
+    </property>
+
+    <property>
+        <name>dfs.journalnode.edits.dir</name>
+        <value>${maven.hadoop.dfs.journalnode.edits.dir}</value>
+    </property>
+
+    <property>
+        <name>dfs.ha.automatic-failover.enabled</name>
+        <value>true</value>
+    </property>
+
+    <property>
+        <name>ha.zookeeper.quorum</name>
+        <value>${maven.hadoop.zookeeper.quorum}</value>
+    </property>
+
+    <property>
+        <name>dfs.namenode.num.extra.edits.retained</name>
+        <value>10</value>
+    </property>
+
+    <property>
+        <name>dfs.namenode.num.checkpoints.retained</name>
+        <value>10</value>
+    </property>
+
+    <property>
+        <name>dfs.namenode.acls.enabled</name>
+        <value>true</value>
+    </property>
+
+    <property>
+        <name>dfs.namenode.fs-limits.max-directory-items</name>
+        <value>6399996</value>
+    </property>
+
+</configuration>

@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.ucar.streamsuite.dao.mysql.UserGroupDao">
+
+    <sql id="user_group_fields">
+        id,name,members,create_time createTime,modify_time modifyTime
+    </sql>
+
+    <select id="getUserGroupById" resultType="com.ucar.streamsuite.user.po.UserGroupPO" parameterType="int">
+        SELECT
+        <include refid="user_group_fields"/>
+        FROM stream_user_group
+        WHERE id = #{id};
+    </select>
+
+    <select id="getUserGroupByName" resultType="com.ucar.streamsuite.user.po.UserGroupPO" parameterType="String">
+        SELECT
+        <include refid="user_group_fields"/>
+        FROM stream_user_group
+        WHERE name = #{name};
+    </select>
+
+    <select id="getUserGroupByTaskId" resultType="com.ucar.streamsuite.user.po.UserGroupPO" parameterType="int">
+        SELECT
+        g.id,g.name,g.members,g.create_time createTime,g.modify_time modifyTime
+        FROM stream_user_group g
+        LEFT JOIN stream_task t
+        ON g.id = t.user_group_id
+        WHERE t.id = #{id}
+    </select>
+
+    <insert id="insertNewUserGroup" parameterType="com.ucar.streamsuite.user.po.UserGroupPO" keyProperty="id" useGeneratedKeys="true">
+        insert into stream_user_group
+        (name,members,create_time,modify_time)
+        values
+        (#{name},#{members},#{createTime},#{modifyTime})
+    </insert>
+
+    <update id="updateUserGroup" parameterType="com.ucar.streamsuite.user.po.UserGroupPO">
+        update stream_user_group
+        set name=#{name},members=#{members},modify_time=#{modifyTime}
+        where id=#{id}
+    </update>
+
+
+    <select id="pageQuery" resultType="com.ucar.streamsuite.user.po.UserGroupPO" parameterType="com.ucar.streamsuite.common.dto.PageQueryDTO" >
+        SELECT
+        <include refid="user_group_fields"/>
+        FROM stream_user_group
+        order by name
+        limit #{startIndex} , #{pageSize}
+    </select>
+
+    <select id="queryCount" resultType="int" >
+        SELECT
+          count(id)
+        FROM stream_user_group
+    </select>
+
+    <select id="queryAll" resultType="com.ucar.streamsuite.user.po.UserGroupPO" >
+        SELECT
+        <include refid="user_group_fields"/>
+        FROM stream_user_group
+        order by name
+    </select>
+
+</mapper>

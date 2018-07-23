@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.ucar.streamsuite.dao.mysql.EngineVersionDao">
+
+    <sql id="version_fields">
+        id,version_name versionName,version_type versionType,version_remark versionRemark,version_url versionUrl,status,create_time createTime,modify_time modifyTime
+    </sql>
+
+    <select id="getEngineVersionById" resultType="com.ucar.streamsuite.config.po.EngineVersionPO" parameterType="int">
+        SELECT
+        <include refid="version_fields"/>
+        FROM stream_engine_version
+        WHERE id = #{id};
+    </select>
+
+    <insert id="insertNewEngineVersion" parameterType="com.ucar.streamsuite.config.po.EngineVersionPO" keyProperty="id"
+            useGeneratedKeys="true">
+        insert into stream_engine_version
+        (version_name,version_type,version_remark,version_url,status,create_time,modify_time)
+        values
+        (#{versionName},#{versionType},#{versionRemark},#{versionUrl},#{status},#{createTime},#{modifyTime})
+    </insert>
+
+    <update id="updateEngineVersion" parameterType="com.ucar.streamsuite.config.po.EngineVersionPO">
+        update stream_engine_version
+        set version_name=#{versionName},version_type=#{versionType},version_remark=#{versionRemark},version_url=#{versionUrl},status=#{status},modify_time=#{modifyTime}
+        where id=#{id}
+    </update>
+
+
+    <select id="pageQuery" resultType="com.ucar.streamsuite.config.po.EngineVersionPO" parameterType="com.ucar.streamsuite.common.dto.PageQueryDTO">
+        SELECT
+        <include refid="version_fields"/>
+        FROM stream_engine_version
+        order by status,version_type,version_name
+        limit #{startIndex} , #{pageSize}
+    </select>
+
+    <select id="queryCount" resultType="int">
+        SELECT
+          count(id)
+        FROM stream_engine_version
+    </select>
+
+
+    <select id="queryByType" resultType="com.ucar.streamsuite.config.po.EngineVersionPO" parameterType="String">
+        SELECT
+        <include refid="version_fields"/>
+        FROM stream_engine_version
+        where version_type = #{type}
+         and status=0
+        order by version_name
+    </select>
+
+</mapper>
